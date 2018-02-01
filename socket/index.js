@@ -82,6 +82,12 @@ socketio.getSocketio = function (server) {
             }
         })
 
+        
+        socket.on('userChat', function (data) {
+            users[data.userName].chatText = data.chatText;
+            io.sockets.emit('userChat', data);
+        })
+
         socket.on('disconnect', function () {
             delete users[id2name[userId]];
             delete userAction[id2name[userId]]

@@ -52,7 +52,7 @@
         font-size: 18px;
         font-family: '微软雅黑';
         outline: none;
-        &:focus{
+        &:focus {
             border-color: #09f;
         }
     }
@@ -70,7 +70,7 @@
         font-size: 18px;
         font-family: '微软雅黑';
         transition: opacity .2s;
-        &:hover{
+        &:hover {
             opacity: .8;
         }
     }
@@ -88,7 +88,8 @@
         border: 1px dashed #fff;
         padding: 20px 0;
         border-radius: 10px;
-        &:hover,&.swiper-slide-active {
+        &:hover,
+        &.swiper-slide-active {
             border-color: #09f;
         }
     }
@@ -96,5 +97,46 @@
         object-fit: cover;
         display: block;
         margin: 0 auto;
+    }
+}
+
+.chat-input-box {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 28px;
+    background: #fff;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-top:none;
+    input {
+        display: block;
+        width: 736px;
+        height: 20px;
+        color: #333;
+        font-size: 12px;
+        font-family: '宋体';
+        padding-left: .5em;
+        border-radius: 3px;
+        float: left;
+        border: 1px solid #ccc;
+    }
+    .emit-btn {
+        height: 20px;
+        color: #fff;
+        float: right;
+        border-radius: 3px;
+        width: 50px;
+        font-size: 12px;
+        line-height: 20px;
+        font-family: '宋体';
+        background: #09f;
+        text-align: center;
+        cursor: pointer;
+        transition: opacity .2s;
+        &:hover{
+            opacity: .8;
+        }
     }
 }

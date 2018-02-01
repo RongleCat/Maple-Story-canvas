@@ -16,9 +16,9 @@
     <div class="canvas-container">
         <canvas id="stage"></canvas>
         <div class="ctrl-layer"></div>
-        <div class="chatInputBox" @click.stop="">
-            <input type="text" id="chat" @keyup.13="chatEmit" v-model="inputText">
-            <div class="emit-btn" @keyup.13="chatEmit">发送</div>
+        <div class="chat-input-box">
+            <input type="text" id="chat">
+            <div class="emit-btn">发送</div>
         </div>
         <div class="mask-layer"></div>
         <div class="join-box">
@@ -32,7 +32,7 @@
             <button id="btn-join">加入</button>
         </div>
     </div>
-
+    
     <input type="text" style="opacity:0" id="jiaodian">
 
     <script src="/js/socket.io.js"></script>

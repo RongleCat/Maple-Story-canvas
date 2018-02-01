@@ -45,7 +45,7 @@ $(function () {
 
                     }
                     //链接到服务器
-                    var socket = io.connect('http://192.168.2.225:3000');
+                    var socket = io.connect('http://www.fmcat.top:8030');
                     socket.on('connect', function (e) {
                         console.log('已连接到服务器');
                     });
@@ -85,15 +85,17 @@ $(function () {
                             roles[r.data.name] = r.data;
                             roleKeyBind(myName, socket);
                             $('.join-box').add('.mask-layer').remove();
+                            $('#jiaodian').focus();
                         }
+                    })
+                    socket.on('userChat',function (r) {
+                        roles[r.userName].chatText = r.chatText;
                     })
 
                     socket.on('deleteUser', function (r) {
                         walkCtrl(r.userName, 'stop');
                         window.clearInterval(timers[r.userName]);
-                        console.log(timers[r.userName]);
                         window.clearInterval(timers[r.userName + 'walk']);
-                        console.log(r);
                         delete roles[r.userName]
                     })
 
@@ -124,15 +126,59 @@ $(function () {
                         var roleImagesName = $('.swiper-slide-active img').attr('data-name');
                         socket.emit('userJoin', {
                             userName: userName,
-                            roleImagesName:roleImagesName
+                            roleImagesName: roleImagesName
                         })
                     })
+
+                    $('#inp-join').on('keypress', function (e) {
+                        if (e.keyCode === 13) {
+                            $('#btn-join').click();
+                        }
+                    })
+
+                    $('#chat').on('keypress', function (e) {
+                        if (e.keyCode === 13) {
+                            emitChat(myName, e.target.value, socket);
+                        }
+                    })
+
+                    $('#jiaodian').on('keypress', function (e) {
+                        if (e.keyCode === 13) {
+                            $('#chat').focus();
+                        }
+                    })
+
+                    $('.emit-btn').on('click', function () {
+                        emitChat(myName, $('#chat').val(), socket);
+                    })
+
+                    $('#stage').on('click',function () {
+                        $('#jiaodian').focus();
+                    })
+
                     //绑定操控事件
                 });
         },
         "json"
     );
 })
+
+function emitChat(myName, content, socket) {
+    roles[myName].chatText = content;
+    socket.emit('userChat', {
+        userName: myName,
+        chatText: content
+    })
+    setTimeout(function () {
+        roles[myName].chatText = '';
+        socket.emit('userChat', {
+            userName: myName,
+            chatText: ''
+        })
+    }, 5000);
+    $('#jiaodian').focus();
+    $('#chat').val('');
+}
 
 
 //图片资源加载成功后回调返回Promise
@@ -375,7 +421,7 @@ function jumpCtrl(name) {
 }
 
 function roleKeyBind(myName, socket) {
-    keyboardJS.watch(document);
+    keyboardJS.watch($('#jiaodian')[0]);
     //跳跃
     keyboardJS.bind('space', function (e) {
         jumpCtrl(myName);
@@ -549,6 +595,7 @@ function roleKeyBind(myName, socket) {
             actionUser: myName
         });
     });
+
 
     keyboardJS.bind('right > down', function (e) {
         if (!e.repeat) {
