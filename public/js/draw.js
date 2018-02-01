@@ -30,15 +30,15 @@ $(function () {
                         var img = images[roleImages[i]];
                         var width = img.width / 9;
                         var y = roleImages[i].split('_')[3]
-                        $('.role-list').append('<div class="swiper-slide"><img data-name="'+roleImages[i]+'" src="' + img.src + '" style="width:' + width + 'px;height:' + img.height + 'px;object-position: left 0 top '+y+'px ;"></div>');
+                        $('.role-list').append('<div class="swiper-slide"><img data-name="' + roleImages[i] + '" src="' + img.src + '" style="width:' + width + 'px;height:' + img.height + 'px;object-position: left 0 top ' + y + 'px ;"></div>');
 
                         var swiper = new Swiper('.swiper-container', {
                             slidesPerView: 3,
                             paginationClickable: true,
                             spaceBetween: 0,
-                            slideToClickedSlide:true,
-                            centeredSlides:true,
-                            spaceBetween:10
+                            slideToClickedSlide: true,
+                            centeredSlides: true,
+                            spaceBetween: 10
                             // simulateTouch:false
                             // autoHeight:true
                         });
@@ -84,6 +84,7 @@ $(function () {
                             myRole = r.data;
                             roles[r.data.name] = r.data;
                             roleKeyBind(myName, socket);
+                            $('.join-box').add('.mask-layer').remove();
                         }
                     })
 
@@ -118,13 +119,13 @@ $(function () {
                     }, 1000 / 24);
 
                     //输入昵称加入聊天室
-                    $('#join').on('keypress', function (e) {
-                        if (e.keyCode === 13) {
-                            // console.log(e.target.value + '加入成功');
-                            socket.emit('userJoin', {
-                                userName: e.target.value
-                            })
-                        }
+                    $('#btn-join').on('click', function (e) {
+                        var userName = $('#inp-join').val();
+                        var roleImagesName = $('.swiper-slide-active img').attr('data-name');
+                        socket.emit('userJoin', {
+                            userName: userName,
+                            roleImagesName:roleImagesName
+                        })
                     })
                     //绑定操控事件
                 });

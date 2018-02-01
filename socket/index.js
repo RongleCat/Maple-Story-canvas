@@ -47,7 +47,7 @@ socketio.getSocketio = function (server) {
             }
 
             let newUser = {
-                roleImg: 'role_nan_01_0',
+                roleImg: data.roleImagesName,
                 state: {
                     x: 20,
                     y: 0,
