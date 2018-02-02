@@ -45,7 +45,7 @@ $(function () {
 
                     }
                     //链接到服务器
-                    var socket = io.connect('http://www.fmcat.top:8030');
+                    var socket = io.connect('http://localhost:8030');
                     socket.on('connect', function (e) {
                         console.log('已连接到服务器');
                     });

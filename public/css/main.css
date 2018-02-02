@@ -152,3 +152,7 @@
 .chat-input-box .emit-btn:hover {
   opacity: .8;
 }
+
+.canvas-container {
+  transform: scale(0.8);
+}
