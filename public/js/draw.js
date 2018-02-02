@@ -44,7 +44,7 @@ $(function () {
 
                     }
                     //链接到服务器
-                    var socket = io.connect('http://192.168.2.225:8030');
+                    var socket = io.connect('https://chat.fmcat.top');
                     socket.on('connect', function (e) {
                         console.log('已连接到服务器');
                     });
