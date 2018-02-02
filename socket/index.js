@@ -7,12 +7,14 @@ socketio.getSocketio = function (server) {
     let users = {};
     let id2name = {};
     let userAction = {};
+    let chatStorage =[];
     //冒险岛聊天室
     io.sockets.on('connection', function (socket) {
         let userId = socket.id;
         console.log(userId + '连接了');
         //给刚连接的用户发送所有玩家数据
-        socket.emit('getUsers', users);
+        socket.emit('getUsers', {users,chatStorage});
+        console.log(chatStorage);
         for(var i in userAction){
             var item = userAction[i].split('_');
             if (item[0] == 'walk') {
@@ -85,6 +87,12 @@ socketio.getSocketio = function (server) {
         
         socket.on('userChat', function (data) {
             users[data.userName].chatText = data.chatText;
+            if (chatStorage.length>100) {
+                chatStorage.shift();
+            }
+            if (data.chatText!=='') {
+                chatStorage.push(data.userName+'：'+data.chatText)
+            }
             io.sockets.emit('userChat', data);
         })
 

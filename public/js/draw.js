@@ -6,6 +6,7 @@ var myName = '';
 var isWalk = false;
 var timers = {};
 var roleImages = [];
+var chatStorage = [];
 
 $(function () {
     var context = document.querySelector('#stage').getContext('2d');
@@ -39,19 +40,22 @@ $(function () {
                             slideToClickedSlide: true,
                             centeredSlides: true,
                             spaceBetween: 10
-                            // simulateTouch:false
-                            // autoHeight:true
                         });
 
                     }
                     //链接到服务器
-                    var socket = io.connect('http://localhost:8030');
+                    var socket = io.connect('http://192.168.2.225:8030');
                     socket.on('connect', function (e) {
                         console.log('已连接到服务器');
                     });
                     //响应服务器下发初始化用户数据，包含所有在线的用户
                     socket.on('getUsers', function (data) {
-                        roles = data;
+                        roles = data.users;
+                        chatStorage = data.chatStorage;
+                        for (var i = 0; i < chatStorage.length; i++) {
+                            $('.chat-list').append('<li>' + chatStorage[i] + '</li>')
+                            chatToBottom();
+                        }
                     });
 
                     socket.on('actionCtrl', function (action) {
@@ -88,8 +92,18 @@ $(function () {
                             $('#jiaodian').focus();
                         }
                     })
-                    socket.on('userChat',function (r) {
+                    socket.on('userChat', function (r) {
                         roles[r.userName].chatText = r.chatText;
+                        if (chatStorage.length > 100) {
+                            chatStorage.shift();
+                            $('.chat-list').find('li').eq(0).remove();
+                            chatToBottom();
+                        }
+                        if (r.chatText !== '') {
+                            chatStorage.push(r.userName + '：' + r.chatText);
+                            $('.chat-list').append('<li>' + r.userName + '：' + r.chatText + '</li>')
+                            chatToBottom();
+                        }
                     })
 
                     socket.on('deleteUser', function (r) {
@@ -152,9 +166,11 @@ $(function () {
                         emitChat(myName, $('#chat').val(), socket);
                     })
 
-                    $('#stage').on('click',function () {
+                    $('#stage').on('click', function () {
                         $('#jiaodian').focus();
                     })
+
+
 
                     //绑定操控事件
                 });
@@ -164,12 +180,13 @@ $(function () {
 })
 
 function emitChat(myName, content, socket) {
+    window.clearTimeout(timers[myName + 'chat']);
     roles[myName].chatText = content;
     socket.emit('userChat', {
         userName: myName,
         chatText: content
     })
-    setTimeout(function () {
+    timers[myName + 'chat'] = setTimeout(function () {
         roles[myName].chatText = '';
         socket.emit('userChat', {
             userName: myName,
@@ -261,7 +278,7 @@ function drawRole(context) {
         //如果有聊天文字，则开始绘制聊天框和文字
         if (role.chatText.length !== 0) {
             var length = role.chatText.length;
-            drawChatText(context, role.chatText, role.state.x, role.state.y - deviationY, img.width / 9, img.height)
+            drawChatText(context, role.name + '：' + role.chatText, role.state.x, role.state.y - deviationY, img.width / 9, img.height)
         }
     }
 }
@@ -644,4 +661,91 @@ function roleKeyBind(myName, socket) {
             actionUser: myName
         });
     });
+
+    //虚拟键操控
+    $('.gb-container').on('touchstart', '.ctrl-item', function (e) {
+        console.log(e);
+        var ctrlName = e.target.className.split(' ')[1];
+        switch (ctrlName) {
+            case 'left':
+                isWalk = true;
+                walkCtrl(myName, 'left')
+                socket.emit('actionCtrl', {
+                    actionName: 'walk',
+                    actionValue: 'left',
+                    actionUser: myName
+                });
+                break;
+            case 'right':
+                isWalk = true;
+                walkCtrl(myName, 'right')
+                socket.emit('actionCtrl', {
+                    actionName: 'walk',
+                    actionValue: 'right',
+                    actionUser: myName
+                });
+                break;
+            case 'bottom':
+                changeRoleState(myName, 1)
+                socket.emit('actionCtrl', {
+                    actionName: 'down',
+                    actionValue: 'down',
+                    actionUser: myName
+                });
+                break;
+            case 'A':
+                jumpCtrl(myName);
+                socket.emit('actionCtrl', {
+                    actionName: 'jump',
+                    actionValue: '',
+                    actionUser: myName
+                });
+                break;
+            case 'B':
+                jumpCtrl(myName);
+                socket.emit('actionCtrl', {
+                    actionName: 'jump',
+                    actionValue: '',
+                    actionUser: myName
+                });
+                break;
+        }
+    })
+    $('.gb-container').on('touchend', '.ctrl-item', function (e) {
+        console.log(e);
+        var ctrlName = e.target.className.split(' ')[1];
+        switch (ctrlName) {
+            case 'left':
+                isWalk = false;
+                walkCtrl(myName, 'stop')
+                socket.emit('actionCtrl', {
+                    actionName: 'walk',
+                    actionValue: 'stop',
+                    actionUser: myName
+                });
+                break;
+            case 'right':
+                isWalk = false;
+                walkCtrl(myName, 'stop')
+                socket.emit('actionCtrl', {
+                    actionName: 'walk',
+                    actionValue: 'stop',
+                    actionUser: myName
+                });
+                break;
+            case 'bottom':
+                changeRoleState(myName, 0)
+                socket.emit('actionCtrl', {
+                    actionName: 'down',
+                    actionValue: 'up',
+                    actionUser: myName
+                });
+                break;
+        }
+    })
+
+}
+
+function chatToBottom() {
+    $('.chat-list').scrollTop(100000000000000);
 }
