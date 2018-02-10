@@ -44,7 +44,7 @@ $(function () {
 
                     }
                     //链接到服务器
-                    var socket = io.connect('https://chat.fmcat.top');
+                    var socket = io.connect('wss://chat.fmcat.top');
                     socket.on('connect', function (e) {
                         console.log('已连接到服务器');
                     });
@@ -57,6 +57,8 @@ $(function () {
                             chatToBottom();
                         }
                     });
+
+                    
 
                     socket.on('actionCtrl', function (action) {
                         if (action.actionName === 'walk') {
@@ -170,7 +172,11 @@ $(function () {
                         $('#jiaodian').focus();
                     })
 
-
+                    $(document).on('visibilitychange',function (e) {
+                        if(!e.target.hidden){
+                            socket.emit('reGetUser');
+                        }
+                    })
 
                     //绑定操控事件
                 });

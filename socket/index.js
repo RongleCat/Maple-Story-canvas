@@ -22,6 +22,10 @@ socketio.getSocketio = function (server) {
             }
         }
 
+        socket.on('reGetUser',function () {
+            socket.emit('getUsers', {users,chatStorage});
+        })
+
         socket.on('actionCtrl', (data) => {
             socket.broadcast.emit('actionCtrl', data);
             userAction[data.actionUser] = data.actionName + '_' + data.actionValue+'_'+data.actionUser;
