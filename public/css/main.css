@@ -3,6 +3,11 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  user-select: none;
+}
+
+input {
+  user-select: unset;
 }
 
 .canvas-container {
@@ -76,11 +81,11 @@
   margin: 0 auto;
   font-size: 18px;
   font-family: '微软雅黑';
-  transition: opacity .2s;
+  transition: opacity 0.2s;
 }
 
 .join-box button:hover {
-  opacity: .8;
+  opacity: 0.8;
 }
 
 .swiper-container {
@@ -100,7 +105,8 @@
   border-radius: 10px;
 }
 
-.swiper-container .swiper-slide:hover, .swiper-container .swiper-slide.swiper-slide-active {
+.swiper-container .swiper-slide:hover,
+.swiper-container .swiper-slide.swiper-slide-active {
   border-color: #09f;
 }
 
@@ -130,7 +136,7 @@
   color: #333;
   font-size: 12px;
   font-family: '宋体';
-  padding-left: .5em;
+  padding-left: 0.5em;
   border-radius: 3px;
   float: left;
   border: 1px solid #ccc;
@@ -148,11 +154,11 @@
   background: #09f;
   text-align: center;
   cursor: pointer;
-  transition: opacity .2s;
+  transition: opacity 0.2s;
 }
 
 .chat-input-box .emit-btn:hover {
-  opacity: .8;
+  opacity: 0.8;
 }
 
 .chat-input-box.mobile {
@@ -185,7 +191,7 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  background: url("../images/gb.png");
+  background: url('../images/gb.png');
   background-size: 100% auto;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
